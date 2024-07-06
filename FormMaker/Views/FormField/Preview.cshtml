@@ -1,0 +1,70 @@
+﻿@model FormMaker.ViewModels.FormFieldViewModel
+@inject FormMaker.Models.AppDbContext db
+@{
+    var singleForm = db.Forms.FirstOrDefault(x => x.Id == Model.formId);
+}
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                @if (singleForm != null)
+                {
+                    <div class="mx-2 col-12 text-center"><h3>@($"{singleForm.Name} -- {singleForm.tableName}")</h3> </div>
+                }
+                <form asp-action="SubmitForm" method="post" onsubmit="setCheckboxValue()">
+                    <input type="hidden" name="formId" value="@Model.formId" />
+                    @foreach (var item in Model.formFields)
+                    {
+                        @* <input type="hidden" name="fieldIds" value="@item.field.Id" /> *@
+                        @switch (item.field.dataType.Name.ToLower())
+                        {
+                            case "datetime":
+                                <label class="form-label">@item.field.Description</label>
+                                <input type="date" required class="form-control" name="values" />
+                                continue;
+                            case "bool":
+                                <div class=" mt-2 text-center">
+                                    <input class="form-check-input" type="checkbox" id="IsChecked" name="IsCheckedCheckbox" />
+                                    <label class="form-check-label" for="IsChecked">@item.field.Description</label>
+                                    <input type="hidden" id="IsCheckedHidden" name="values" value="false" />
+                                </div>
+                                continue;
+                            case "int":
+                                <label class="form-label">@item.field.Description</label>
+                                <input type="number" required class="form-control" name="values" />
+                                continue;
+                            case "string":
+                                <label class="form-label">@item.field.Description</label>
+                                <input class="form-control" required name="values" />
+                                continue;
+                            default:
+                                break;
+                        }
+                    }
+                    <div class="mt-2 text-center">
+                        <button type="submit" class="btn btn-success col-12"> ثبت </button>
+                    </div>
+                </form>
+                <div class="mt-2 text-center">
+                    <a class="btn btn-warning" style="width:100%" asp-action="GenerateExcel" asp-route-Id="@Model.formId">خروجی اکسل</a>
+                </div>
+                    <div class="text-center"><p>@Model.SqlMessage</p></div>
+            </div>
+        </div>
+    </div>
+    @section Scripts{
+        <script>
+            function setCheckboxValue() {
+                var checkbox = document.getElementById('IsChecked');
+                var hiddenInput = document.getElementById('IsCheckedHidden');
+                hiddenInput.value = checkbox.checked ? 'true' : 'false';
+            }
+        </script>
+    }
+</body>
+
+</html>

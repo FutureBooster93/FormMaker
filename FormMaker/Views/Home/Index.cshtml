@@ -1,0 +1,90 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+@model FormMaker.ViewModels.FieldViewModel
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+    <div class="container">
+        <form asp-action="CreateField" method="post">
+            <div class="row" style="flex-direction:row-reverse">
+                <div class="col-md-4">
+                    <label class="form-label">نام فیلد</label>
+                    <input class="form-control" asp-for="@Model.Name" />
+                    <span asp-validation-for="@Model.Name" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">نوع</label>
+                    <select class="form-select" asp-for="@Model.dataTypeId" asp-items="@Model.dataTypes">
+                        <option>--select type--</option>
+                    </select>
+                    <span asp-validation-for="@Model.dataTypeId" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">شرح</label>
+                    <input class="form-control" asp-for="@Model.Description" />
+                    <span asp-validation-for="@Model.Description" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-4">
+
+                    <button type="submit" class="btn btn-success"> ثبت </button>
+                </div>
+            </div>
+
+        </form>
+        <hr  class="mb-2"/>
+        <div class="row pt-2">
+            <table class="table table-bordered table-striped" style="direction:rtl">
+                <thead>
+                    <tr>
+                        <td>ردیف</td>
+                        <td>نام فیلد</td>
+                        <td>نوع</td>
+                        <td>شرح</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Fields != null && Model.Fields.Count > 0)
+                    {
+                        @for (int i = 0; i < Model.Fields.Count; i++)
+                        {
+                            <tr>
+                                <td>@(i + 1)</td>
+                                <td>@Model.Fields[i].Name</td>
+                                <td>@Model.Fields[i].dataType.Name</td>
+                                <td>@Model.Fields[i].Description</td>
+                                <td class="text-center"><a class="btn btn-danger" asp-action="Delete" asp-route-Id="@Model.Fields[i].Id">Delete</a></td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>اطلاعاتی وجود ندارد</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <div class="col-12 text-start">
+                @if (Model.message!=null && Model.message!="")
+                {
+                    <p class="text-danger">@Model.message</p>
+                }
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

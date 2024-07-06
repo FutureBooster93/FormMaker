@@ -1,0 +1,46 @@
+﻿@model FormMaker.ViewModels.FormViewModel
+<body>
+    <div class="container">
+        <form asp-action="Search" method="post">
+            <div class="row justify-content-start" style="flex-direction:row-reverse;align-items:flex-end">
+                <div class="col-md-4">
+                    <label class="form-label">فرم ها</label>
+                    <input name="searchTerm" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-warning" type="submit">جستجو</button>
+                </div>
+                
+            </div>
+        </form>
+
+        <hr />
+        <form asp-action="FormCreate">
+            <div class="row justify-content-start align-items-end mt-3" style="flex-direction:row-reverse">
+                <div class="col-md-4">
+                    <label class="form-label">نام فرم</label>
+                    <input class="form-control" asp-for="@Model.name" id="formName" />
+                    <span asp-validation-for="name"></span>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-success"> + </button>
+                </div>
+            </div>
+            <div asp-validation-summary="All" class="row text-danger text-end"></div>
+        </form>
+        <div class="row mt-3">
+            @await Html.PartialAsync("_FieldGrid", Model)
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <a class="btn btn-secondary" asp-action="Index" >نمایش همه فرمها</a>
+            </div>
+            <div class="col-md-9"><p>@Model.sqlResponse</p></div>
+        </div>
+    </div>
+</body>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

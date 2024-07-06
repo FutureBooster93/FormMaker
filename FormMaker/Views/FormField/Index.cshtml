@@ -1,0 +1,84 @@
+﻿@model FormMaker.ViewModels.FormFieldViewModel
+
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+    <div class="container">
+        <div class="row mb-3">
+            <form asp-action="FormFieldCreate" class="row justify-content-start p-0" style="flex-direction:row-reverse;align-items:flex-end">
+                <input type="hidden" asp-for="@Model.formId" />
+                <div class="col-md-4">
+                    <label class="form-label">فیلد ها</label>
+                    <select class="form-select" asp-for="@Model.fieldId" id="formDropDown">
+                        <option>--انتخاب فیلد--</option>
+                        @if (Model.fields != null)
+                        {
+                            @foreach (var item in Model.fields)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+
+                            }
+
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-success" type="submit"> + </button>
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <table class="table table-bordered table-striped" style="direction:rtl">
+                <thead>
+                    <tr>
+                        <td>ردیف</td>
+                        <td>نام فیلد</td>
+                        <td>نوع</td>
+                        <td>شرح</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.formFields!=null && Model.formFields.Count > 0)
+                    {
+                        @for (int i = 0; i < Model.formFields.Count; i++)
+                        {
+                            
+                            <tr>
+                                <td>@(i + 1)</td>
+                                <td>@Model.formFields[i].field.Name</td>
+                                <td>@Model.formFields[i].field.dataType.Name</td>
+                                <td>@Model.formFields[i].field.Description</td>
+                                <td class="text-center"><a class="btn btn-danger" asp-action="Delete" asp-route-Id="@Model.formFields[i].Id">Delete</a></td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>اطلاعاتی وجود ندارد</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="row text-danger" asp-validation-summary="All"></div>
+        <div class="row ">
+            <div class="col-md-3">
+                <a class="btn btn-secondary" asp-action="Preview" asp-route-Id="@Model.formId">پیش نمایش</a>
+            </div>
+            
+            <div class="col-md-9">
+                <p>@Model.SqlMessage</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
